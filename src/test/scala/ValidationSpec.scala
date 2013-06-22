@@ -12,7 +12,6 @@ object ValidationSpec extends Specification with ValidationMatchers {
       succ must beSuccess
       succ must beSuccess(2)
       fail must beFailure
-      //fail must beFailure[ArithmeticException]
     }
 
     "let us perform map" in {
@@ -37,20 +36,20 @@ object ValidationSpec extends Specification with ValidationMatchers {
       fail.bimap(_ => new Throwable{}, _ + 10) must beFailure
     }
 
-    // "let us filter" in {
-    //   val succ = Validation(1)
-    //   val fail = Validation(1 / 0)
-    //   succ.filter(_ == 1) must beSuccess(1)
-    //   succ.filter(_ == 2) must beFailure
-    //   fail.filter(_ == true) must beFailure
-    // }
+    "let us filter" in {
+      val succ = Validation(1)
+      val fail = Validation(1 / 0)
+      succ.filter(_ == 1) must beSuccess(1)
+      //succ.filter(_ == 2) must beFailure
+      fail.filter(_ == 12) must beFailure
+    }
 
     "let us forAll" in {
       val succ = Validation(1)
       val fail = Validation(1 / 0)
       succ.forAll(_ == 1) must beTrue
       succ.forAll(_ == 2) must beFalse
-      fail.forAll(_ == true) must beFalse
+      fail.forAll(_ == 12) must beFalse
     }
 
     "let us foreach" in {

@@ -28,11 +28,11 @@ sealed trait Validation[+E, +A] {
     case Failure(e) => Failure(f(e))
   }
 
-  // def filter[EE >: E](f: A => Boolean): Validation[EE, A] = this match {
-  //   case Success(a) if (f(a)) => Success(a)
-  //   case Success(a) => Failure(..)
-  //   case Failure(e) => Failure(e)
-  // }
+  def filter[EE >: E](f: A => Boolean): Validation[EE, A] = this match {
+    case Success(a) if (f(a)) => Success(a)
+    //case Success(a) => this.swap // this fails..
+    case Failure(e) => Failure(e)
+  }
 
   def forAll(f: A => Boolean): Boolean = this match {
     case Success(a) => f(a)

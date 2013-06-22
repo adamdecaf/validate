@@ -14,8 +14,4 @@ trait ValidationMatchers extends MatchersImplicits {
   def beFailure[E, A]: Matcher[Validation[E, A]] =
     ((v: Validation[E, A]) => v.isFailure,
      (v: Validation[E, A]) => "%s is not a Failure".format(v))
-
-  // def beFailure[E]: Matcher[Validation[E, _]] =
-  //   ((v: Validation[E, _]) => v.isFailure && v.isInstanceOf[Failure[E, _]],
-  //    (v: Validation[E, _]) => if (v.isSuccess) "%s is not a success".format(v) else "%s is not a failure of type %s".format(v, v))
 }
