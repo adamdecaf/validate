@@ -4,6 +4,8 @@ organization := "com.decaf"
 
 scalaVersion := "2.10.2"
 
+version := "0.1"
+
 scalacOptions ++= Seq("-feature", "-deprecation")
 
 libraryDependencies ++= Seq(
