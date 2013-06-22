@@ -1,4 +1,3 @@
-validate
-========
+# validate
 
 validation -- clean and simple
