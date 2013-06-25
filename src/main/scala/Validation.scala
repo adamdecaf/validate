@@ -18,6 +18,11 @@ sealed trait Validation[+E, +A] {
     case Failure(e) => Failure(e)
   }
 
+  def leftMap[B](f: E => B): Validation[B, A] = this match {
+    case Success(a) => Success(a)
+    case Failure(e) => Failure(f(e))
+  }
+
   def flatMap[EE >: E, AA](f: A => Validation[EE, AA]): Validation[EE, AA] = this match {
     case Success(a) => f(a)
     case Failure(e) => Failure(e)
@@ -26,12 +31,6 @@ sealed trait Validation[+E, +A] {
   def bimap[EE, AA](f: E => EE, g: A => AA) = this match {
     case Success(a) => Success(g(a))
     case Failure(e) => Failure(f(e))
-  }
-
-  def filter[EE >: E](f: A => Boolean): Validation[EE, A] = this match {
-    case Success(a) if (f(a)) => Success(a)
-    //case Success(a) => this.swap // this fails..
-    case Failure(e) => Failure(e)
   }
 
   def forAll(f: A => Boolean): Boolean = this match {
@@ -78,4 +77,9 @@ object Validation {
     case e: Throwable => Failure(e)
   }
 
+  def success[E, A](v: A): Validation[E, A] = Success(v)
+  def failure[E, A](v: E): Validation[E, A] = Failure(v)
+
+  def find[E, A, M[_] <: Traversable[_]](vs: M[Validation[E, A]])(f: Validation[E, A] => Boolean): Option[Validation[E, A]] =
+    vs.collectFirst { case v: Validation[E, A] if f(v) => v }
 }

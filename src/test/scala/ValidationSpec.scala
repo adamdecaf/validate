@@ -14,11 +14,18 @@ object ValidationSpec extends Specification with ValidationMatchers {
       fail must beFailure
     }
 
-    "let us perform map" in {
+    "let us map" in {
       val succ = Validation(1)
       val fail = Validation(1 / 0)
       succ.map(_.toString) must beSuccess("1")
       fail.map(_.toString) must beFailure
+    }
+
+    "let us leftMap" in {
+      val succ = Validation(1)
+      val fail = Validation(1 / 0)
+      succ.leftMap(_.toString) must beSuccess(1)
+      fail.leftMap(_.toString) must beFailure
     }
 
     "let us flatMap" in {
@@ -34,14 +41,6 @@ object ValidationSpec extends Specification with ValidationMatchers {
       val fail = Validation(1 / 0)
       succ.bimap(_ => new Throwable{}, _ + 10) must beSuccess(11)
       fail.bimap(_ => new Throwable{}, _ + 10) must beFailure
-    }
-
-    "let us filter" in {
-      val succ = Validation(1)
-      val fail = Validation(1 / 0)
-      succ.filter(_ == 1) must beSuccess(1)
-      //succ.filter(_ == 2) must beFailure
-      fail.filter(_ == 12) must beFailure
     }
 
     "let us forAll" in {
@@ -94,6 +93,18 @@ object ValidationSpec extends Specification with ValidationMatchers {
       val fail = Validation(1 / 0)
       succ.toOption must beSome(1)
       fail.toOption must beNone
+    }
+
+    "let us find one if it exists" in {
+      val succ = Validation(1)
+      val fail = Validation(1 / 0)
+      val l1 = List.empty[Validation[Throwable, Int]]
+      val l2 = List(succ)
+      val l3 = List(fail)
+
+      Validation.find(l1)(_ == succ) must beNone
+      // Validation.find(l2)(_ == succ) must beSome
+      // Validation.find(l3)(_ == succ) must beNone
     }
   }
 }
