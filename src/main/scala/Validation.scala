@@ -79,7 +79,4 @@ object Validation {
 
   def success[E, A](v: A): Validation[E, A] = Success(v)
   def failure[E, A](v: E): Validation[E, A] = Failure(v)
-
-  def find[E, A, M[_] <: Traversable[_]](vs: M[Validation[E, A]])(f: Validation[E, A] => Boolean): Option[Validation[E, A]] =
-    vs.collectFirst { case v: Validation[E, A] if f(v) => v }
 }

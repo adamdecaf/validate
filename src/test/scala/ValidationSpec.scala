@@ -94,17 +94,5 @@ object ValidationSpec extends Specification with ValidationMatchers {
       succ.toOption must beSome(1)
       fail.toOption must beNone
     }
-
-    "let us find one if it exists" in {
-      val succ = Validation(1)
-      val fail = Validation(1 / 0)
-      val l1 = List.empty[Validation[Throwable, Int]]
-      val l2 = List(succ)
-      val l3 = List(fail)
-
-      Validation.find(l1)(_ == succ) must beNone
-      // Validation.find(l2)(_ == succ) must beSome
-      // Validation.find(l3)(_ == succ) must beNone
-    }
   }
 }
