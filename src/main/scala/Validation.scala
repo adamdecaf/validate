@@ -1,5 +1,6 @@
 package com.decaf.validation
 import scala.language.higherKinds
+import scala.util.control.NonFatal
 
 final case class Success[E, A](value: A) extends Validation[E, A]
 final case class Failure[E, A](error: E) extends Validation[E, A]
@@ -71,11 +72,12 @@ sealed trait Validation[+E, +A] {
 
 object Validation {
 
-  def apply[E, A](v: => A) = try {
-    Success(v)
-  } catch {
-    case e: Throwable => Failure(e)
-  }
+  def apply[E, A](v: => A) =
+    try {
+      Success(v)
+    } catch {
+      case NonFatal(e) => Failure(e)
+    }
 
   def success[E, A](v: A): Validation[E, A] = Success(v)
   def failure[E, A](v: E): Validation[E, A] = Failure(v)
